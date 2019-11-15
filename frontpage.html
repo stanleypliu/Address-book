@@ -1,0 +1,123 @@
+<!-- To do: -->
+<!-- Figure out how to post data to same page (in new div) -->
+<!-- Collapsible navbar (low-priority) -->
+<!-- Make an about page.  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+	<link href="./style.css" type="text/css" rel="stylesheet"/>
+	<link href="https://fonts.googleapis.com/css?family=ABeeZee|Montserrat&display=swap" rel="stylesheet"> 
+	<title>Address Book (one-use)</title>
+
+</head>
+
+<body>
+<header>
+	<nav>
+		<ul>
+		  <li><a href="./frontpage.html" class="active-page">Home</a></li>
+		  <li><a href="./placeholder.html">About</a></li>
+		</ul>
+	</nav>
+</header>
+
+<section class="overlay">
+	<h1>ADDRESS BOOK</h1>
+	<hr>
+	<h2>Welcome. Please begin by filling in the forms below to flesh out the address book.</h2>
+
+		<form action="">
+
+			<label for="firstname">Name:
+				<input id="firstname" name="firstname" type="text" required minlength="1">
+			</label>
+
+			<hr>
+
+			<label for="surname">Surname:
+				<input id="surname" name="surname" type="text" required minlength="2">
+			</label>
+
+			<hr>
+
+			<label for="phonenumber">Phone number (landline):
+    			<input type="number" name="phonenumber" id="phonenumber" min="10" size="15" required>
+			</label>
+
+			<hr>
+			<label for="housenumber">House number:
+    			<input type="houseid" name="housenumber" id="housenumber" min="1" size="4" required>
+			</label>
+			<br>
+			<!-- <label for="houseName"><i>OR</i>- fill in your house name: -->
+    			<!-- <input type="houseid" name="houseName" id="houseName" required> -->
+			<!-- </label> -->
+			<!-- <hr> -->
+			<label for="firstline">Street:
+    			<input class="street" type="text" name="firstline" id="firstline" required >
+			</label>
+			<hr>
+			<label class="urban" for="city">City:
+    			<input type="text" name="city" id="city" required>
+			</label>
+			<hr>
+			  <label class="extra-info" for="extra">A short description of your home (optional)
+			  <br>
+			  <textarea id="extra" name="extra">You may include a brief description of your home here if you wish.</textarea>
+			</label>
+			<br>
+			<input id="submitbutton" type="submit" value="Add entry to address book">
+		</form>
+
+</section>
+
+<section class="display"><p></p></section>
+</body>
+
+<footer>
+    <address>
+        Contact <a href="stanleypliu@gmail.com">Stanley Liu</a>. Background has been used under the Creative Commons license
+    </address>
+	
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(function () {				
+	$("form").submit(function(){
+		// Text-only fields
+		var textFields = [$( "input[name=firstname]" ).val(), $( "input[name=surname]" ).val(), $( "input[name=firstline]" ).val(), $( "input[name=city]" ).val()];
+
+		
+		var textRegex = /[a-z]+\s*/i;
+		
+		const textOnly = textFields.every(function(field) {
+			return textRegex.test(field);
+		});
+		
+		if (textOnly === false)
+		{
+			alert("Please enter text only in those fields!");
+			return;
+		}
+		else
+		{
+			alert("success");
+		}
+						
+		var str = '';
+		str += $('.firstname').val() + '<br />';
+		str += $('.surname').val() + '<br />';
+		str += $('.phonenumber').val() + '<br />';
+		str += $('.housenumber').val() + '<br />';
+		str += $('.firstline').val() + '<br />';
+		str += $('.city').val() + '<br />';
+		$('#display').append(str);
+        return false;
+				
+	});
+});
+</script>
+</html>
