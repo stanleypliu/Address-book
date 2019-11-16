@@ -28,8 +28,8 @@
 	<h1>ADDRESS BOOK</h1>
 	<hr>
 	<h2>Welcome. Please begin by filling in the forms below to flesh out the address book.</h2>
-
-		<form action="">
+	<div class="form">
+		<form>
 
 			<label for="firstname">Name:
 				<input id="firstname" name="firstname" type="text" required minlength="1">
@@ -51,11 +51,15 @@
 			<label for="housenumber">House number:
     			<input type="houseid" name="housenumber" id="housenumber" min="1" size="4" required>
 			</label>
-			<br>
+			<hr>
 			<!-- <label for="houseName"><i>OR</i>- fill in your house name: -->
     			<!-- <input type="houseid" name="houseName" id="houseName" required> -->
 			<!-- </label> -->
 			<!-- <hr> -->
+			<label for="email">Email:
+    			<input class="emailaddress" type="text" name="email" id="email" required >
+			</label>
+			<hr>
 			<label for="firstline">Street:
     			<input class="street" type="text" name="firstline" id="firstline" required >
 			</label>
@@ -70,11 +74,21 @@
 			</label>
 			<br>
 			<input id="submitbutton" type="submit" value="Add entry to address book">
+			<button id="viewbook">View Address Book</button>
 		</form>
-
+	</div>	
 </section>
 
-<section class="display"><p></p></section>
+<section class="display">
+	<h2></h2>
+	<table id="myTable"></table>
+	<div class="controlbuttons">
+		<button id="previous">Previous entry</button>
+		<button id="del">Delete entry</button>
+		<button id="modify">Modify entry</button>
+		<button id="next">Next entry</button>
+	</div>
+</section>
 </body>
 
 <footer>
@@ -82,21 +96,31 @@
         Contact <a href="stanleypliu@gmail.com">Stanley Liu</a>. Background has been used under the Creative Commons license
     </address>
 	
-</footer>
+</footer> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-$(function () {				
-	$("form").submit(function(){
+$(function () {
+	// Initial state of page
+	const addressBook = [];
+	var currentEntry = 0;
+	$('.display').hide();
+	$('.controlbuttons').hide(); // Hiding before any entries are submitted.
+	$('.display h2').text(`Showing ${addressBook.length}` + " of " + `${addressBook.length} entries`);	
+	
+	// Upon submitting an entry
+	$( "form" ).submit(function( event ) {
+		$('#myTable').empty();
+		
+		//Validation step
 		// Text-only fields
 		var textFields = [$( "input[name=firstname]" ).val(), $( "input[name=surname]" ).val(), $( "input[name=firstline]" ).val(), $( "input[name=city]" ).val()];
-
 		
 		var textRegex = /[a-z]+\s*/i;
-		
+	
 		const textOnly = textFields.every(function(field) {
 			return textRegex.test(field);
 		});
-		
+	
 		if (textOnly === false)
 		{
 			alert("Please enter text only in those fields!");
@@ -104,20 +128,89 @@ $(function () {
 		}
 		else
 		{
-			alert("success");
+			alert("success");				
+		}					
+		
+		// Formatting form data and storing it
+		var result = {};
+		var arr = $('form').serializeArray();
+		
+		if (arr[7].value === "You may include a brief description of your home here if you wish.")
+		{
+			arr[7].value = "No information entered.";
+		} 			
+		addressBook.push(arr);		
+		
+		// Resets form after pushing entry
+		$('form').trigger('reset'); 
+
+		
+		//Display table	
+		function(appendTable(currentEntry){
+		$('#myTable').append('<tr><td>Name</td><td>' + `${addressBook[currentEntry][0].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Surname</td><td>' + `${addressBook[currentEntry][1].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Phone number</td><td>' + `${addressBook[currentEntry][2].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>House number</td><td>' + `${addressBook[currentEntry][3].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Email</td><td>' + `${addressBook[currentEntry][4].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Street</td><td>' + `${addressBook[currentEntry][5].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>City</td><td>' + `${addressBook[currentEntry][6].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Optional information</td><td>' + `${addressBook[currentEntry][7].value}` + '</td></tr>');
+		  $('#myTable').show();
+		  currentEntry++;
+		 }
+		  
+		  
+		$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+			
+		if (addressBook.length > 1)
+		{
+			$('.controlbuttons').show();
 		}
-						
-		var str = '';
-		str += $('.firstname').val() + '<br />';
-		str += $('.surname').val() + '<br />';
-		str += $('.phonenumber').val() + '<br />';
-		str += $('.housenumber').val() + '<br />';
-		str += $('.firstline').val() + '<br />';
-		str += $('.city').val() + '<br />';
-		$('#display').append(str);
-        return false;
-				
+					
+		event.preventDefault();
+	});
+	
+	// Buttons	
+	$('#next').click(function(){
+			$('#myTable').empty();
+			currentEntry++;
+			appendTable();
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+		})
+		
+		if (currentEntry === addressBook.length)
+		{
+			$('#next').hide();
+		}
+
+		
+		$('#previous').click(function(){
+			$('#myTable').empty();
+			currentEntry--;
+			appendTable();
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+		})
+		
+		if (currentEntry === 0)
+		{
+			$('#previous').hide();
+		}
+		
+		
+		$('#del').click(function(){			
+			addressBook.splice(addressBook.length - 1, 1);
+			currentEntry--;
+			appendTable();
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+		})
+	
+	
+	// Coding the "View Address Book" button
+	$('#viewbook').click(function(){
+		$('.display').toggle("show");
+		$(this).text($(this).text() == 'Hide Address Book' ? 'View Address Book' : 'Hide Address Book');		
 	});
 });
+
 </script>
 </html>
