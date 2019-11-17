@@ -28,8 +28,8 @@
 	<h1>ADDRESS BOOK</h1>
 	<hr>
 	<h2>Welcome. Please begin by filling in the forms below to flesh out the address book.</h2>
-
-		<form action="">
+	<div class="form">
+		<form>
 
 			<label for="firstname">Name:
 				<input id="firstname" name="firstname" type="text" required minlength="1">
@@ -51,11 +51,15 @@
 			<label for="housenumber">House number:
     			<input type="houseid" name="housenumber" id="housenumber" min="1" size="4" required>
 			</label>
-			<br>
+			<hr>
 			<!-- <label for="houseName"><i>OR</i>- fill in your house name: -->
     			<!-- <input type="houseid" name="houseName" id="houseName" required> -->
 			<!-- </label> -->
 			<!-- <hr> -->
+			<label for="email">Email:
+    			<input class="emailaddress" type="text" name="email" id="email" required >
+			</label>
+			<hr>
 			<label for="firstline">Street:
     			<input class="street" type="text" name="firstline" id="firstline" required >
 			</label>
@@ -70,54 +74,204 @@
 			</label>
 			<br>
 			<input id="submitbutton" type="submit" value="Add entry to address book">
+			<button id="viewbook">View Address Book</button>
 		</form>
-
+	</div>	
 </section>
 
-<section class="display"><p></p></section>
+<section class="display">
+	<h2></h2>
+	<table id="myTable"></table>
+	<br>
+	<section class="controlbuttons">
+		<button id="previous">Previous entry</button>
+		<button id="del">Delete entry</button>
+		<button id="modify">Modify entry</button>
+		<button id="next">Next entry</button>
+	</section>
+</section>
 </body>
 
 <footer>
     <address>
-        Contact <a href="stanleypliu@gmail.com">Stanley Liu</a>. Background has been used under the Creative Commons license
+        Contact <a href="mailto:stanleypliu@gmail.com">Stanley Liu</a>. Background has been used under the Creative Commons license
     </address>
 	
-</footer>
+</footer> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-$(function () {				
-	$("form").submit(function(){
+$(function () {
+	// Initial state of page
+	const addressBook = [];
+	var currentEntry = 1;
+	$('.display').hide();
+	
+	if (addressBook.length === 0)
+	{
+		$('.controlbuttons').hide(); // Hiding before any entries are submitted.
+	}
+	
+	$('.display h2').text(`Showing ${addressBook.length}` + " of " + `${addressBook.length} entries`);	
+	
+	// Upon submitting an entry
+	$( "form" ).submit(function( event ) {
+		
+		
+		//Validation step
 		// Text-only fields
 		var textFields = [$( "input[name=firstname]" ).val(), $( "input[name=surname]" ).val(), $( "input[name=firstline]" ).val(), $( "input[name=city]" ).val()];
-
 		
 		var textRegex = /[a-z]+\s*/i;
-		
+	
 		const textOnly = textFields.every(function(field) {
 			return textRegex.test(field);
 		});
-		
+	
 		if (textOnly === false)
 		{
-			alert("Please enter text only in those fields!");
+			alert("Please enter text only in Name, Surname, Street and City!");
 			return;
 		}
 		else
 		{
-			alert("success");
+			alert("success");				
+		}					
+		
+		// Formatting form data and storing it
+		var result = {};
+		var arr = $('form').serializeArray();
+		
+		if (arr[7].value === "You may include a brief description of your home here if you wish.")
+		{
+			arr[7].value = "No information entered.";
+		} 			
+		addressBook.push(arr);		
+		
+		// Resets form after pushing entry
+		$('form').trigger('reset'); 
+
+		
+		//Display table	
+		window.appendTable = function(index){
+		$('#myTable').empty();
+		$('#myTable').append('<tr><td>Name</td><td>' + `${addressBook[index][0].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Surname</td><td>' + `${addressBook[index][1].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Phone number</td><td>' + `${addressBook[index][2].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>House number</td><td>' + `${addressBook[index][3].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Email</td><td>' + `${addressBook[index][4].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Street</td><td>' + `${addressBook[index][5].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>City</td><td>' + `${addressBook[index][6].value}` + '</td></tr>');
+		  $('#myTable').append('<tr><td>Optional information</td><td>' + `${addressBook[index][7].value}` + '</td></tr>');
+		  $('#myTable').show();
+		 };
+		
+		appendTable(0); // Permanently displaying the first entry of the array.
+		 $('.display h2').text("Showing 1 of " + `${addressBook.length} entries`);
+		 
+		window.currentLength = addressBook.length;
+		
+		if (currentLength === 1)
+		{
+			$('.controlbuttons').show();
+			$('#next').hide();
+			$('#previous').hide();
 		}
-						
-		var str = '';
-		str += $('.firstname').val() + '<br />';
-		str += $('.surname').val() + '<br />';
-		str += $('.phonenumber').val() + '<br />';
-		str += $('.housenumber').val() + '<br />';
-		str += $('.firstline').val() + '<br />';
-		str += $('.city').val() + '<br />';
-		$('#display').append(str);
-        return false;
-				
+			
+		if (currentLength >= 2)
+		{
+			$('#next').show();
+
+		}
+		
+					
+		event.preventDefault();
+	});
+	
+	// Buttons	
+		$('#del').click(function(){						
+			if (addressBook.length === 1)
+			{				
+				$('#myTable').empty();
+				addressBook.splice(0, 1);
+				$('.controlbuttons').hide();
+				$('.display h2').text("Showing 0 of " + `${addressBook.length} entries`);
+				console.log(currentEntry);
+				return;
+			}
+			else if (addressBook.length === 2)
+			{
+				currentEntry--;				
+				console.log(currentEntry);
+				appendTable(currentEntry - 1);
+				addressBook.splice(currentEntry, 1);
+				$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);				
+			}
+			else
+			{
+				currentEntry--;				
+				console.log("Upon clicking delete, currentEntry: " + currentEntry);
+				appendTable(currentEntry);
+				addressBook.splice(currentEntry, 1);
+				$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);		
+			}
+		});
+		
+		// Modify button creates a new div to modify the values before resubmitting
+		<!-- $('#modify').click(function(){						 -->
+
+		<!-- }); -->
+	
+		
+		
+		
+
+		
+
+
+		window.nextClick = $('#next').click(function(){
+			currentEntry++;
+			console.log("Upon pressing next, current entry:" + currentEntry);
+			appendTable(currentEntry - 1);
+			if (currentEntry === currentLength)
+			{
+				$('#next').hide();
+			}
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+		});		
+			
+
+		
+		
+		if (currentEntry > 1)
+		{
+			console.log("Showing previous button");
+			$('#previous').show();
+		}		
+		else if (currentEntry === 1)
+		{
+			console.log("can't show previous button");
+			$('#previous').hide();
+		}
+		
+		window.previousClick = $('#previous').click(function(){
+			currentEntry--;
+			console.log("Upon clicking Previous, currentEntry is now " + `${currentEntry}`);
+			appendTable(currentEntry);
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+		});			
+			
+			
+		
+	
+	
+	
+	
+	// Coding the "View Address Book" button
+	$('#viewbook').click(function(){
+		$('.display').toggle("show");
+		$(this).text($(this).text() == 'Hide Address Book' ? 'View Address Book' : 'Hide Address Book');		
 	});
 });
+
 </script>
 </html>
