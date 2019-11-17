@@ -114,7 +114,7 @@ textarea {
 }
 
 
-#submitbutton, #viewbook, button {
+#submitbutton, button {
   background-color: rgb(192, 192, 192);
   border: none;
   color: black;
@@ -127,6 +127,11 @@ textarea {
   height: auto;
   font-family: 'ABeeZee', sans-serif;
 }
+
+.controlbuttons {
+	display: inline-block;
+}
+
 
 #myTable td {	
 	border: 1px solid #000000;
