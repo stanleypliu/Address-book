@@ -103,13 +103,11 @@
 $(function () {
 	// Initial state of page
 	const addressBook = [];
-	var currentEntry = 1;
+	window.currentEntry = 1;
 	$('.display').hide();
 	
-	if (addressBook.length === 0)
-	{
-		$('.controlbuttons').hide(); // Hiding before any entries are submitted.
-	}
+	$('.controlbuttons').hide(); // Hiding before any entries are submitted.
+
 	
 	$('.display h2').text(`Showing ${addressBook.length}` + " of " + `${addressBook.length} entries`);	
 	
@@ -169,97 +167,93 @@ $(function () {
 		 $('.display h2').text("Showing 1 of " + `${addressBook.length} entries`);
 		 
 		window.currentLength = addressBook.length;
+		console.log(addressBook);
 		
-		if (currentLength === 1)
-		{
-			$('.controlbuttons').show();
-			$('#next').hide();
-			$('#previous').hide();
-		}
-			
-		if (currentLength >= 2)
-		{
-			$('#next').show();
-
-		}
 		
 					
 		event.preventDefault();
 	});
 	
-	// Buttons	
-		$('#del').click(function(){						
-			if (addressBook.length === 1)
-			{				
-				$('#myTable').empty();
-				addressBook.splice(0, 1);
-				$('.controlbuttons').hide();
-				$('.display h2').text("Showing 0 of " + `${addressBook.length} entries`);
-				console.log(currentEntry);
-				return;
-			}
-			else if (addressBook.length === 2)
-			{
-				currentEntry--;				
-				console.log(currentEntry);
-				appendTable(currentEntry - 1);
-				addressBook.splice(currentEntry, 1);
-				$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);				
-			}
-			else
-			{
-				currentEntry--;				
-				console.log("Upon clicking delete, currentEntry: " + currentEntry);
-				appendTable(currentEntry);
-				addressBook.splice(currentEntry, 1);
-				$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);		
-			}
-		});
-		
-		// Modify button creates a new div to modify the values before resubmitting
-		<!-- $('#modify').click(function(){						 -->
-
-		<!-- }); -->
-	
-		
-		
-		
-
-		
-
-
-		window.nextClick = $('#next').click(function(){
-			currentEntry++;
-			console.log("Upon pressing next, current entry:" + currentEntry);
-			appendTable(currentEntry - 1);
-			if (currentEntry === currentLength)
-			{
-				$('#next').hide();
-			}
-			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
-		});		
+	// Buttons
+	console.log(addressBook);
+	if (window.currentLength === 1)
+	{
+		$('.controlbuttons').show();
+		$('#next').hide();
+		$('#previous').hide();
+	}
 			
+	if (window.currentLength >= 2)
+	{
+		$('#next').show();
 
+	}
 		
-		
-		if (currentEntry > 1)
-		{
-			console.log("Showing previous button");
-			$('#previous').show();
-		}		
-		else if (currentEntry === 1)
-		{
-			console.log("can't show previous button");
-			$('#previous').hide();
+	$('#del').click(function(){						
+		if (addressBook.length === 1)
+		{				
+			$('#myTable').empty();
+			addressBook.splice(0, 1);
+			$('.controlbuttons').hide();
+			$('.display h2').text("Showing 0 of " + `${addressBook.length} entries`);
+			console.log(currentEntry);
+			return;
 		}
-		
-		window.previousClick = $('#previous').click(function(){
-			currentEntry--;
-			console.log("Upon clicking Previous, currentEntry is now " + `${currentEntry}`);
+		else if (addressBook.length === 2)
+		{
+			currentEntry--;				
+			console.log(currentEntry);
+			appendTable(currentEntry - 1);
+			addressBook.splice(currentEntry, 1);
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);				
+		}
+		else
+		{
+			currentEntry--;				
+			console.log("Upon clicking delete, currentEntry: " + currentEntry);
 			appendTable(currentEntry);
-			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
-		});			
-			
+			addressBook.splice(currentEntry, 1);
+			$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);		
+		}
+	});
+		
+	// Modify button creates a new div to modify the values before resubmitting
+	<!-- $('#modify').click(function(){						 -->
+
+	<!-- }); -->
+	
+	window.nextClick = $('#next').click(function(){
+		currentEntry++;
+		console.log("Upon pressing next, current entry:" + currentEntry);
+		appendTable(currentEntry - 1);
+		if (currentEntry === currentLength)
+		{
+			$('#next').hide();
+		}
+		$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+	});		
+		
+
+	
+	
+	if (window.currentEntry > 1)
+	{
+		console.log("Showing previous button");
+		$('#previous').show();
+	}		
+	else if (window.currentEntry === 1)
+	{
+		console.log("can't show previous button");
+		$('#previous').hide();
+	}
+	
+	window.previousClick = $('#previous').click(function(){
+		currentEntry--;
+		console.log("Upon clicking Previous, currentEntry is now " + `${currentEntry}`);
+		appendTable(currentEntry);
+		$('.display h2').text(`Showing ${currentEntry}` + " of " + `${addressBook.length} entries`);
+	});			
+		
 			
 		
 	
