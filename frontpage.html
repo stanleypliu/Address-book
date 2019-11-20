@@ -1,15 +1,10 @@
-<!-- To do: -->
-<!-- Figure out how to post data to same page (in new div) -->
-<!-- Collapsible navbar (low-priority) -->
-<!-- Make an about page.  -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
 	<meta charset="utf-8">
-	<link href="./style2.css" type="text/css" rel="stylesheet"/>
-	<link href="https://fonts.googleapis.com/css?family=ABeeZee|Montserrat&display=swap" rel="stylesheet"> 
+	<link href="./style.css" type="text/css" rel="stylesheet"/>
+	<link href="https://fonts.googleapis.com/css?family=ABeeZee|Montserrat|Quicksand&display=swap" rel="stylesheet"> 
 	<title>Address Book (one-use)</title>
 
 </head>
@@ -18,7 +13,7 @@
 <header>
 	<nav>
 		<ul>
-		  <li><a href="./frontpagev2.html" class="active-page">Home</a></li>
+		  <li><a href="./frontpage.html" class="active-page">Home</a></li>
 		  <li><a href="./about.html">About</a></li>
 		</ul>
 	</nav>
@@ -30,32 +25,22 @@
 	<h2>Welcome. Please begin by filling in the forms below to flesh out the address book.</h2>
 	<div class="form">
 		<form>
-
 			<label for="firstname">Name:
 				<input id="firstname" name="firstname" type="text" required minlength="1">
 			</label>
-
 			<hr>
-
 			<label for="surname">Surname:
 				<input id="surname" name="surname" type="text" required minlength="2">
 			</label>
-
 			<hr>
-
 			<label for="phonenumber">Phone number (landline):
     			<input type="number" name="phonenumber" id="phonenumber" min="10" size="15" required>
 			</label>
-
 			<hr>
 			<label for="housenumber">House number:
     			<input type="number" name="housenumber" id="housenumber" min="1" size="4" required>
 			</label>
-			<hr>
-			<!-- <label for="houseName"><i>OR</i>- fill in your house name: -->
-    			<!-- <input type="houseid" name="houseName" id="houseName" required> -->
-			<!-- </label> -->
-			<!-- <hr> -->
+			<hr>	
 			<label for="email">Email:
     			<input class="emailaddress" type="text" name="email" id="email" required >
 			</label>
@@ -80,7 +65,8 @@
 
 <section class="entries">
 	<h1>ENTRIES DISPLAYED BELOW</h1>
-	<label for="search">Search by first name or surname:
+	<hr>
+	<label for="search">Search entries:
 		<input id="searchValue" type="text" minlength="1">
 	</label>
 	<table id="myTable">
@@ -100,6 +86,9 @@
 		<tbody id="entryRows">
 		</tbody>
 	</table>
+	<div class="initMessage">
+		<p><i> No entries found.</i></p>
+	</div>
 </section>
 
 <section class="buttonbar">
@@ -109,7 +98,7 @@
 
 <footer>
     <address>
-        Background has been used under the Creative Commons license
+        <a href="https://c.wallhere.com/photos/65/8a/sf_sanfrancisco_california_street_city_houses_wallpaper_usa-951748.jpg!d">Background</a> has been used under the Creative Commons license
     </address>
 	
 </footer> 
@@ -119,6 +108,7 @@ $(function () {
 	// Initial state of page
 	var addressBook = [];
 	$('.entries').hide();
+	$('.searchMessage').hide();
 	
 	// Validation step
 	var textFields = [$("#firstname"),$("#surname") , $("#firstline"),$("#city" )];
@@ -137,13 +127,11 @@ $(function () {
 				return;
 			}
 			
-			if (90 < key && key < 97)
-			{
+			if (90 < key && key < 97) {
 				e.preventDefault();
 				return;
 			}			
-			else if (64 > key || key > 123)
-			{
+			else if (64 > key || key > 123){
 				e.preventDefault();
 				return;
 			}
@@ -185,7 +173,10 @@ $(function () {
 		event.preventDefault();
 	});
 	
-	
+	$('form').on("submit", function () {
+		$('.initMessage').hide();
+	});
+-	
 	// Delete button
 	$('#entryRows').on('click','#deletebutton',function(){
 		if (confirm('Delete this entry?')){
@@ -195,24 +186,27 @@ $(function () {
 		}
 	});
 	
-	
 	// Search function - dynamic
 	$('form').on("submit", function () {
-	 $("#searchValue").on("keyup", function() {
-		var value = $(this).val().toLowerCase();
-		$("#entryRows tr").filter(function() {
-		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		$("#searchValue").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#entryRows tr").filter(function() {
+				var match = $(this).text().toLowerCase().indexOf(value);
+				$(this).toggle(match > -1)
 		});
 	  });
 	});
 
+	
+	// Modify button - appears on search match
+	
 
 
 	// Coding the "View Address Book" button
 	$('#viewbook').click(function(){
 		$('.overlay').toggle("hide");
 		$('.entries').toggle("show");
-		$(this).text($(this).text() == 'Hide Address Book' ? 'View Address Book' : 'Hide Address Book');		
+		$(this).text($(this).text() === 'Hide Address Book' ? 'View Address Book' : 'Hide Address Book');		
 	});
 });
 
