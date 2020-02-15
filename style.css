@@ -35,6 +35,17 @@ li a:hover {
   background-color: #111;
 }
 
+@media screen and (max-width: 1500px) {
+  nav {
+    float: none;
+    width: 100%;
+	text-align: center;
+  }
+ li a {
+	display: inline-block;
+  }
+}
+
 h1 {
 	color: black;
 	font-family: 'Montserrat', sans-serif;
