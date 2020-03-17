@@ -1,6 +1,6 @@
 # One-page address book app
 
-Basically a repo containing all the files needed to run an address book app on a website. Currently not working as intended due to submitted user data not displaying. 
+My first ever application which I developed as part of the entrance exam for Codeworks, a fullstack development bootcamp, that I eventually uncommitted from. However, it was instrumental in teaching me web design, along with animations via jQuery, which, prior to this project, I had no experience of.
 
 -------------
 Update 19/11/19: rewrote code to produce a working solution.
